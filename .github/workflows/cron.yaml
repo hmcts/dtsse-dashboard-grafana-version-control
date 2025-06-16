@@ -25,7 +25,7 @@ jobs:
           GRAFANA_TEST_DASHBOARD_UID: ${{ secrets.GRAFANA_TEST_DASHBOARD_UID }}
           GITHUB_REPO_OWNER_AND_NAME: ${{ github.repository }}
           GITHUB_REPO_OWNER_USERNAME: ${{ github.repository_owner }}
-          GITHUB_BRANCH_NAME: "main"
+          GITHUB_BRANCH_NAME: "master"
           GITHUB_PARENT_DIRECTORY: ${{ github.workspace }}
           VERSION_RESTORE: >
             [
