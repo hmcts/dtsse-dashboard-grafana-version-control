@@ -25,7 +25,11 @@ for VERSION_TO_RESTORE in ${VERSIONS_TO_RESTORE[@]}; do
 
     LATEST_VERSION=$(curl -s -H "Authorization: Bearer ${GRAFANA_SERVICE_TOKEN}" "${DASHBOARD_VERSION_PREFIX_URL}${UID_TO_RESTORE}${DASHBOARD_VERSION_SUFFIX_URL}" | jq -r '.versions[0].version')
 
-    OLDEST_VERSION_SAVED_TO_GRAFANA=$((LATEST_VERSION - VERSION_LIMIT))
+    if [ "${LATEST_VERSION}" -lt "${VERSION_LIMIT}" ]; then
+        OLDEST_VERSION_SAVED_TO_GRAFANA=0
+    else
+        OLDEST_VERSION_SAVED_TO_GRAFANA=$((LATEST_VERSION - VERSION_LIMIT))
+    fi
 
     if [ -z "${VERSION_TO_RESTORE}" ]; then
         echo "Skipping restore as version number is not defined."
