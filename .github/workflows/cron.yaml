@@ -1,0 +1,39 @@
+name: Grafana Dashboard Versioning
+
+on:
+  # schedule:
+    # Run daily at midnight UTC
+    # - cron: '0 0 * * *'
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  backup-grafana-dashboards:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Grafana dashboard versioning script
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GRAFANA_SERVICE_TOKEN: ${{ secrets.GRAFANA_SERVICE_TOKEN }}
+          GRAFANA_BASE_URL: ${{ secrets.GRAFANA_BASE_URL }}
+          GRAFANA_TEST_DASHBOARD_UID: ${{ secrets.GRAFANA_TEST_DASHBOARD_UID }}
+          GITHUB_REPO_OWNER_AND_NAME: ${{ github.repository }}
+          GITHUB_REPO_OWNER_USERNAME: ${{ github.repository_owner }}
+          GITHUB_BRANCH_NAME: "main"
+          GITHUB_PARENT_DIRECTORY: ${{ github.workspace }}
+          VERSION_RESTORE: >
+            [
+              { "RESTORE_DASHBOARD_UID": "000000003", "RESTORE_DASHBOARD_VERSION": 1 },
+              { "RESTORE_DASHBOARD_UID": "", "RESTORE_DASHBOARD_VERSION": "" }
+            ]
+        run: |
+          chmod +x ./scripts/grafana-versioning-restore.sh
+          ./scripts/grafana-versioning-restore.sh
+          chmod +x ./scripts/grafana-versioning-test.sh
+          ./scripts/grafana-versioning-test.sh
